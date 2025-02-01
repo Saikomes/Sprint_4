@@ -13,15 +13,16 @@ import java.time.Duration;
 
 public class QuestionPage {
 
-    private final WebDriver driver;// Кнопка разворачивания опции выпадающего меню
-    By questionsOptionButton = By.xpath(".//div[contains(@class, 'accordion__button')]");
-    By answerPanelText = By.xpath(".//div[contains(@class, 'accordion__panel')]//p");
+    private final WebDriver driver;
 
     public QuestionPage(WebDriver driver) {
-
         this.driver = driver;
     }
 
+    // Кнопка разворачивания опции выпадающего меню
+    By questionsOptionButton = By.xpath(".//div[contains(@class, 'accordion__button')]");
+    // Панель ответа на вопрос
+    By answerPanel = By.xpath(".//div[contains(@class, 'accordion__panel')]");
     // Опция выпадающего меню по ее тексту
     By questionsOptionByText(String optionText) {
         return By.xpath
@@ -37,16 +38,16 @@ public class QuestionPage {
         WebElement button = questionOption.findElement(questionsOptionButton);
         new WebDriverWait(driver, Duration.ofSeconds(EnvConfig.EXPLICIT_WAIT)).until(ExpectedConditions.elementToBeClickable(button));
         button.click();
-    }// Проверка что опция выпадающего меню вопросов содержит корректный ответ при раскрытии
+    }
 
+    // Проверка что опция выпадающего меню вопросов содержит корректный ответ при раскрытии
     public void assertQuestionOptionHasCorrectAnswer(String optionText, String expectedAnswer) {
         expandQuestionsDropDownOption(optionText);
         WebElement questionOption = driver.findElement(questionsOptionByText(optionText));
-        WebElement answerPanel = questionOption.findElement(answerPanelText);
+        WebElement answerPanel = questionOption.findElement(this.answerPanel);
         // Ожидаем, пока текст ответа станет видимым
         new WebDriverWait(driver, Duration.ofSeconds(EnvConfig.EXPLICIT_WAIT))
                 .until(ExpectedConditions.not(ExpectedConditions.attributeContains(answerPanel, "style", "display: none")));
-
         // Прокручиваем страницу до текста ответа
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", answerPanel);
         new WebDriverWait(driver, Duration.ofSeconds(EnvConfig.EXPLICIT_WAIT)).until(ExpectedConditions.visibilityOf(answerPanel));

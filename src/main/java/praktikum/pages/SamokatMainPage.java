@@ -10,17 +10,12 @@ import praktikum.EnvConfig;
 
 import java.time.Duration;
 
-import static org.junit.Assert.assertEquals;
-
 public class SamokatMainPage {
 
     private final WebDriver driver;
-
     public QuestionPage questionPage;
-
     //Кнопка "Заказать" в хедере
     private final By orderButtonHeader = By.xpath(".//div[@class='Header_Nav__AGCXC']/button[text()='Заказать']");
-
     //Кнопка "Заказать" на основном контенте страницы
     private final By orderButtonMain = By.xpath(".//div[@class='Home_FinishButton__1_cWm']/button[text()='Заказать']");
     //Кнопка согласия с Cookie
@@ -33,6 +28,9 @@ public class SamokatMainPage {
 
     public void acceptCookie() {
         driver.findElement(acceptCookieButton).click();
+        new WebDriverWait(driver, Duration.ofSeconds(EnvConfig.EXPLICIT_WAIT)).
+                until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(
+                        acceptCookieButton)));
     }
 
     public void openMainPage() {

@@ -7,28 +7,43 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import praktikum.EnvConfig;
+import praktikum.helpers.Date;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class ArendaInfoPage {
-    private WebDriver driver;
+    private final WebDriver driver;
 
     public By getPackageDateInput() {
+
         return packageDateInput;
     }
 
+    public ArendaInfoPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    // Поле ввода даты доставки
     private final By packageDateInput = By.xpath(".//input[@placeholder='* Когда привезти самокат']");
-    private final By duratonDropdownRoot = By.xpath(".//div[@class='Dropdown-placeholder']/ancestor::div[@class='Dropdown-root']");
+    // Область вызова контекстного меню продолжительности
+    private final By durationDropdownRoot = By.xpath(".//div[@class='Dropdown-placeholder']" +
+            "/ancestor::div[@class='Dropdown-root']");
+    // Выпадающее меню с опциями длительности аренды
     private final By durationOptionsMenu = By.className("Dropdown-menu");
     // Локатор для календаря
     private final By calendarLocator = By.cssSelector(".react-datepicker");
+    // Чекбокс с цветом "Черная жемчужина"
     private final By blackColorCheckbox = By.id("black");
+    // Чекбокс с цветом "Серая безысходность"
     private final By greyColorCheckbox = By.id("grey");
+    // Поле ввода комментария к заказу
     private final By commentInput = By.xpath(".//input[@placeholder='Комментарий для курьера']");
-    private final By orderButton = By.xpath(".//div[@class='Order_Buttons__1xGrp']/button[text()='Заказать']");
+    // Кнопка заказа
+    private final By orderButton = By.xpath(".//div[@class='Order_Buttons__1xGrp']" +
+            "/button[text()='Заказать']");
+
+    // Локатор опции длительности заказа по тексту
     private By durationOptionByText(String duration) {
         return By.xpath
                 (String.format
@@ -36,20 +51,16 @@ public class ArendaInfoPage {
                                 duration));
     }
 
-    public ArendaInfoPage(WebDriver driver) {
-        this.driver = driver;
-    }
-
     public void selectDeliveryDay(String dateString) {
-
+        // Заполняем поле ввода даты доставки
+        driver.findElement(packageDateInput).sendKeys(dateString);
+        // Вызываем календарь
         driver.findElement(packageDateInput).click();
         // Ожидание появления календаря
         new WebDriverWait(driver,  Duration.ofSeconds(EnvConfig.EXPLICIT_WAIT)).
                 until(ExpectedConditions.visibilityOfElementLocated(calendarLocator));
-        // Парсинг даты
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate date = LocalDate.parse(dateString, formatter);
-        int day = date.getDayOfMonth();
+        // Извлекаем день из переданной даты
+        int day = Date.parseStringToDate("dd.MM.yyyy", dateString).getDayOfMonth();
 
         // Формирование локатора для дня
         String dayLocator = String.format(".react-datepicker__day--%03d" +
@@ -61,7 +72,7 @@ public class ArendaInfoPage {
     }
 
     public void chooseDuration(String duration) {
-        driver.findElement(duratonDropdownRoot).click();
+        driver.findElement(durationDropdownRoot).click();
         // Ожидание появления меню
         new WebDriverWait(driver,  Duration.ofSeconds(EnvConfig.EXPLICIT_WAIT)).
                 until(ExpectedConditions.visibilityOfElementLocated(durationOptionsMenu));

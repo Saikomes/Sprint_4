@@ -13,6 +13,6 @@ public class EnvConfig {
     public static final String ORDER_COMMENT = "Пожалуйста, позвоните за час до доставки.";
     public static final String USERNAME = "Богдан";
     public static final String ADDRESS = "Москва, ул. Ленина, 1";
-    public static final String SUBNAME = "Агафонов";
+    public static final String SURNAME = "Агафонов";
     public static final String TELEPHONE = "+79250217893";
 }

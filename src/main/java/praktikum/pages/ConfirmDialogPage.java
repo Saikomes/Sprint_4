@@ -3,15 +3,10 @@ package praktikum.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ConfirmDialogPage {
     private final WebDriver driver;
-
-    public ConfirmDialogPage(WebDriver driver) {
-        this.driver = driver;
-    }
 
     public By getDialogWindow() {
         return dialogWindow;
@@ -21,6 +16,11 @@ public class ConfirmDialogPage {
         return dialogHeaderText;
     }
 
+    public ConfirmDialogPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    //Диалог подтверждения заказа
     private final By dialogWindow = By.className("Order_Modal__YZ-d3");
 
     //кнопка диалога по тексту
@@ -31,6 +31,7 @@ public class ConfirmDialogPage {
                                 text));
     }
 
+    //Текст заголовка диалога
     private final By dialogHeaderText = By.className("Order_ModalHeader__3FDaJ");
 
     public void clickDialogButton(String buttonText) {
