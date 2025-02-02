@@ -10,7 +10,6 @@ import praktikum.EnvConfig;
 import praktikum.helpers.Date;
 
 import java.time.Duration;
-import java.util.Arrays;
 
 public class ArendaInfoPage {
     private final WebDriver driver;
@@ -86,12 +85,18 @@ public class ArendaInfoPage {
         durationElement.click();
     }
 
-    public void chooseColorVariants(String[] selectedOptions) {
-        if(Arrays.asList(selectedOptions).contains(EnvConfig.BLACK_PEARL)) {
-            driver.findElement(blackColorCheckbox).click();
-        }
-        if(Arrays.asList(selectedOptions).contains(EnvConfig.GREY_MELANCHOLY)) {
-            driver.findElement(greyColorCheckbox).click();
+    public void chooseColorVariants (String[] selectedOptions) throws Exception {
+        for (String option : selectedOptions) {
+            switch (option) {
+                case EnvConfig.BLACK_PEARL:
+                    driver.findElement(blackColorCheckbox).click();
+                    break;
+                case EnvConfig.GREY_MELANCHOLY:
+                    driver.findElement(greyColorCheckbox).click();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported color option: " + option);
+            }
         }
 
     }
@@ -104,7 +109,7 @@ public class ArendaInfoPage {
         driver.findElement(orderButton).click();
     }
 
-    public void fillOrderFormAndSubmit(String deliveryDate, String[] colors) {
+    public void fillOrderFormAndSubmit(String deliveryDate, String[] colors) throws Exception {
         selectDeliveryDay(deliveryDate);
         chooseDuration(EnvConfig.ORDER_DURATION);
         chooseColorVariants(colors);
