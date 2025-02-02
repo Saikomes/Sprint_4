@@ -1,0 +1,94 @@
+package praktikum.pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import praktikum.EnvConfig;
+
+import java.time.Duration;
+
+public class ClientInfoPage {
+    private final WebDriver driver;
+
+    public By getNameInput() {
+        return nameInput;
+    }
+
+    public ClientInfoPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    //Поле ввода имени заказчика
+    private final By nameInput = By.xpath(".//input[@placeholder='* Имя']");
+    //Поле ввода фамилии заказчика
+    private final By surnameInput = By.xpath(".//input[@placeholder='* Фамилия']");
+    //Поле ввода адреса
+    private final By addressInput = By.xpath(".//input[@placeholder='* Адрес: куда привезти заказ']");
+    //Поле ввода метро
+    private final By metroInput = By.xpath(".//input[@placeholder='* Станция метро']");
+    //Поле ввода телефона
+    private final By telephoneInput = By.xpath(".//input[@placeholder='* " +
+            "Телефон: на него позвонит курьер']");
+    //Меню выбора станции метро
+    private final By metroOptions = By.xpath(".//ul[@class='select-search__options']");
+    //Кнопка "Далее"
+    private final By forwardButton = By.xpath(".//button[text()='Далее']");
+    //Опция для выбора станции метро по названию станции
+    private By metroOptionByText(String metroName) {
+        return By.xpath
+                (String.format
+                        (".//div[text() = '%s']/parent::button",
+                                metroName));
+    }
+
+    public void setUsername(String username) {
+        driver.findElement(nameInput).sendKeys(username);
+    }
+
+    public void setSubname(String subname) {
+        driver.findElement(surnameInput).sendKeys(subname);
+    }
+
+    public void setAddress(String address) {
+        driver.findElement(addressInput).sendKeys(address);
+    }
+
+    public void setMetro(String metroName) {
+        driver.findElement(metroInput).click();
+
+        // Ожидание появления списка станций метро
+        new WebDriverWait(driver, Duration.ofSeconds(EnvConfig.EXPLICIT_WAIT)).
+                until(ExpectedConditions.visibilityOfElementLocated(metroOptions));
+
+        // Поиск нужной станции метро
+        WebElement metroElement = driver.findElement(metroOptionByText(metroName));
+
+        // Прокрутка до нужного элемента
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", metroElement);
+
+        // Клик по элементу
+        metroElement.click();
+    }
+
+    public void setTelephone(String telephone) {
+
+        driver.findElement(telephoneInput).sendKeys(telephone);
+    }
+
+    public void clickForwardButton() {
+
+        driver.findElement(forwardButton).click();
+    }
+
+    public void submitUserInfo(String metroStation) {
+        setUsername(EnvConfig.USERNAME);
+        setSubname(EnvConfig.SURNAME);
+        setAddress(EnvConfig.ADDRESS);
+        setMetro(metroStation);
+        setTelephone(EnvConfig.TELEPHONE);
+        clickForwardButton();
+    }
+}
